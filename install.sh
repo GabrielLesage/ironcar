@@ -11,9 +11,9 @@ sudo apt-get install libblas-dev liblapack-dev libatlas-base-dev gfortran -y
 sudo apt-get install libhdf5-dev -y
 
 # Python
-sudo pip3 install -r requirements_raspi.txt
+pip install -r requirements_raspi.txt
 
-var=`python3 -c 'import sys; print(sys.version_info[:])'`  # Get the Python version
+var=`python3.5 -c 'import sys; print(sys.version_info[:])'`  # Get the Python version
 set -- $var
 v=$2  # version number
 v=${v:0:1}
@@ -22,14 +22,14 @@ if [ $v -eq 4 ];
 then
     echo "Python 3.4";
     wget https://github.com/samjabrahams/tensorflow-on-raspberry-pi/releases/download/v1.1.0/tensorflow-1.1.0-cp34-cp34m-linux_armv7l.whl
-    sudo pip3 install tensorflow-1.1.0-cp34-cp34m-linux_armv7l.whl
+    pip install tensorflow-1.1.0-cp34-cp34m-linux_armv7l.whl
 elif [ $v -eq 5 ]
 then
     echo "Python 3.5";
     wget https://www.dropbox.com/s/gy4kockdbdyx85j/tensorflow-1.0.1-cp35-cp35m-linux_armv7l.whl?dl=1
     mv tensorflow-1.0.1-cp35-cp35m-linux_armv7l.whl?dl=1 tensorflow-1.0.1-cp35-cp35m-linux_armv7l.whl
-    sudo pip3 install tensorflow-1.0.1-cp35-cp35m-linux_armv7l.whl
-    pip3 install numpy==1.14.0
+    pip install tensorflow-1.0.1-cp35-cp35m-linux_armv7l.whl
+    pip install numpy==1.14.0
 else
     echo "There is no good version of Python";
     python3 --version

@@ -184,6 +184,17 @@ socket.on('max_speed_update_callback', function(data){
     $("#maxSpeed").text("Max speed limit: " + Math.round(data.speed*100) + "%");
 });
 
+// -------- Dir control via slider -----------
+
+function directionSlided(){
+    var direction = (document.getElementById("directionSlider").value - 50) / 50 ;
+    socket.emit("dir", direction);
+}
+
+socket.on('dir_callback', function(data){
+    $("#direction_s").text(data.direction);
+});
+
 // -------- COMMANDS -----------
 
 $("[data-command-reversed]").click(function(event) {
@@ -241,6 +252,7 @@ function handle(e) {
     if (e.key == "ArrowLeft" && e.type == "keydown" && !e.repeat) {
         var elem = $("#controlLeft");
         elem.css('color', 'red');
+	//new_dir = parseFloat(document.getElementById("direction_s").value) - 0.01
         socket.emit("dir", -1);
     }
     if (e.key == "ArrowLeft" && e.type == "keyup" && !e.repeat) {
@@ -251,6 +263,7 @@ function handle(e) {
     if (e.key == "ArrowRight" && e.type == "keydown" && !e.repeat) {
         var elem = $("#controlRight");
         elem.css('color', 'red');
+	//new_dir = parseFloat(document.getElementById("direction_s").value) + 0.01
         socket.emit("dir", 1);
     }
     if (e.key == "ArrowRight" && e.type == "keyup" && !e.repeat) {
@@ -352,11 +365,33 @@ socket.on("model_loaded", function(data) {
 });
 
 
+function gamepad_handle() {
+       var gamepads = navigator.getGamepads();
+       var gp = gamepads[0];
+
+       if (!(gp == null)) {
+          console.log(gp);
+          socket.emit("debug_print", "gamepad gachette " + gp.buttons[7].value);
+          socket.emit("gas", gp.buttons[7].value);
+          var dir_axes = gp.axes[0];
+          if ((dir_axes < -0.20) || (dir_axes > 0.20)) {
+                socket.emit("debug_print", "gamepad axes " + gp.axes[0]);
+                socket.emit("dir", gp.axes[0]);
+          } else {
+                socket.emit("debug_print", "gamepad axes neutral");
+                socket.emit("dir", 0);
+          } 
+        }
+}
+
+
+
 socket.on('picture_stream', function(data) {
-    // data = { image: true, buffer: img_base64, index: index_class}
+    //data = { image: true, buffer: img_base64, index: index_class}
 
     if (data.image) {
-
+       //Gamepad
+	gamepad_handle(); // TODO: try setInterval
         $('#stream_image').attr('xlink:href', 'data:image/jpeg;base64,' + data.buffer);
 
         var steer_to_arrow = ['35','80','125','150','175'];

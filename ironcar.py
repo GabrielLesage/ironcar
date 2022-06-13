@@ -5,6 +5,7 @@ import numpy as np
 from app import socketio
 from PIL.Image import fromarray as PIL_convert
 from utils import ConfigException, CameraException
+#from time import sleep
 
 CONFIG = 'config.json'
 CAM_RESOLUTION = (250, 150)
@@ -99,8 +100,7 @@ class Ironcar():
                 buffered = BytesIO()
                 im.save(buffered, format="JPEG")
                 img_str = b64encode(buffered.getvalue())
-                socketio.emit('picture_stream', {'image': True, 'buffer': img_str.decode(
-                    'ascii'), 'index': index_class, 'pred': [float(x) for x in prediction]}, namespace='/car')
+                socketio.emit('picture_stream', {'image': True, 'buffer': img_str.decode("ascii"), 'index': index_class, 'pred': [float(x) for x in prediction]}, namespace='/car')
 
             cam_output.truncate(0)
 
@@ -277,6 +277,10 @@ class Ironcar():
         # sent a last command before switching.
         self.gas(self.commands['neutral'])
         self.dir(self.commands['straight'])
+        #for i in range(200, 400, 5):
+         #   print("trying pwm value", i)
+          #  self.gas(i)
+           # sleep(10)
 
         if self.verbose:
             print('switched to mode : ', new_mode)
@@ -396,8 +400,8 @@ class Ironcar():
             global get_default_graph
             if get_default_graph is None:
                 try:
-                    from tensorflow import get_default_graph
-                    from keras.models import load_model
+                    from tensorflow.keras import backend
+                    from tensorflow.keras import models as tf
                 except Exception as e:
                     msg = 'Error while importing ML librairies. Got error {}'.format(e)
                     data = {'type': 'danger', 'msg': msg}
@@ -410,7 +414,7 @@ class Ironcar():
             if self.verbose:
                 print('Selected model: ', model_name)
 
-            self.model = load_model(model_name)
+            self.model = tf.load_model(model_name)
             self.graph = get_default_graph()
             self.current_model = model_name
 
@@ -429,6 +433,8 @@ class Ironcar():
 
             if self.verbose:
                 print('An Exception occured : ', e)
+                import traceback
+                print(traceback.format_exc())
 
     def load_config(self):
         """Loads the config file of the ironcar

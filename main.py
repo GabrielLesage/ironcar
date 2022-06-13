@@ -73,6 +73,14 @@ def mode_update():
 
 
 # ------- SOCKETS ----------
+
+@socketio.on('debug_print')
+def debug_print(something):
+    """print something"""
+
+    print('SERVER : Debug Print : {}'.format(something))
+
+
 @socketio.on('mode_update')
 def mode_update(mode):
     """Changes the driving mode of the car"""
@@ -137,6 +145,9 @@ def handle_dir(direction):
 
     print('SERVER : dir : ' + str(direction))
     ironcar.on_dir(direction)
+
+    socketio.emit('dir_callback', {
+                  'direction': direction}, namespace='/car')
 
 
 @socketio.on('streaming_starter')
