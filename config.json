@@ -5,6 +5,7 @@
         "left": 300,
         "straight": 370,
         "right": 430,
+<<<<<<< HEAD
         "stop": 250,
         "neutral": 375,
         "drive": 400,
@@ -13,6 +14,16 @@
         "rev_neutral": 375,
         "rev_drive": 40,
         "rev_drive_max": 460,
+=======
+        "stop": 300,
+        "neutral": 375,
+        "drive": 420,
+        "drive_max": 480,
+        "rev_stop": 400,
+        "rev_neutral": 370,
+        "rev_drive": 360,
+        "rev_drive_max": 350,
+>>>>>>> 1da91f205c43c492ee47b6ff6c78f40eaf796da7
         "go_t": 0.25,
         "stop_t": -0.25,
         "left_t": 0.5,
